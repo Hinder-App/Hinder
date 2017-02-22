@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MathActivity extends AppCompatActivity {
@@ -13,6 +14,7 @@ public class MathActivity extends AppCompatActivity {
     TextView numberOne;
     TextView mathSymbol;
     TextView numberTwo;
+    EditText answer;
     Button submitButton;
 
     @Override
@@ -23,7 +25,7 @@ public class MathActivity extends AppCompatActivity {
         numberOne = (TextView) findViewById(R.id.number_one);
         mathSymbol = (TextView) findViewById(R.id.math_symbol);
         numberTwo = (TextView) findViewById(R.id.number_two);
-
+        answer = (EditText) findViewById(R.id.edittext_answer);
         //for loop (15-17)
         //generate random 1-10 numbers and have it assigned to the textviews
         //generate math symbol + or -
@@ -38,6 +40,8 @@ public class MathActivity extends AppCompatActivity {
                 if () {
                 } else {
                 } */
+                Intent intent = new Intent(MathActivity.this, MemoryActivity.class);
+                startActivity(intent);
             }
         });
 

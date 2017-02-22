@@ -40,6 +40,12 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
+    <EditText
+        android:id="@+id/edittext_answer"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:hint="Type Answer" />
+
     <Button
         android:text="Submit Answer"
         android:textSize="30dp"

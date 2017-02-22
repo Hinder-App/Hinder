@@ -34,6 +34,8 @@ public class MemoryActivity extends AppCompatActivity {
         c1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MemoryActivity.this, ColorActivity.class);
+                startActivity(intent);
             }
         });
         c2Button = (ImageButton) findViewById(R.id.card2);

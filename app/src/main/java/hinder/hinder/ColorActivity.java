@@ -32,6 +32,8 @@ public class ColorActivity extends AppCompatActivity {
         c1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Intent intent = new Intent(ColorActivity.this, ProgressActivity.class);
+                //startActivity(intent);
             }
         });
         c2Button = (Button) findViewById(R.id.card2);
