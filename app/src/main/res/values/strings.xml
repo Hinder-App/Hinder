@@ -2,6 +2,7 @@
     <string name="app_name">Hinder</string>
 
     <!-- Strings related to login and register -->
+    <string name="title_activity_register">Register</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_name">Name</string>
@@ -18,19 +19,24 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_register">Register</string>
 
     <!-- Strings related to MenuActivity -->
+    <string name="title_activity_menu">Menu</string>
     <string name="menu_name">Menu</string>
     <string name="button_start">Start</string>
     <string name="button_progress">Progress</string>
     <string name="button_settings">User Settings</string>
 
     <!-- Strings related to SettingsActivity -->
+    <string name="title_activity_settings">Settings</string>
     <string name="text_name">Name</string>
     <string name="edit_name"></string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
     <string name="text_age">Age</string>
     <string name="button_save">Save</string>
+
+    <!-- Strings related to ProgressActivity -->
+    <string name="title_activity_progress">Progress</string>
+
 </resources>

@@ -50,9 +50,29 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hinder.hinder.LoginActivity" />
         </activity>
-        <activity android:name=".MenuActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".ProgressActivity"></activity>
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu"
+            android:parentActivityName=".MenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hinder.hinder.MenuActivity" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hinder.hinder.MenuActivity" />
+        </activity>
+        <activity
+            android:name=".ProgressActivity"
+            android:label="@string/title_activity_progress"
+            android:parentActivityName=".MenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hinder.hinder.MenuActivity" /></activity>
     </application>
 
 </manifest>
