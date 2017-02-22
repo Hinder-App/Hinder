@@ -31,6 +31,18 @@
                 android:value="hinder.hinder.LoginActivity" />
         </activity>
         <activity
+            android:name=".MathActivity"
+            android:label="Math">
+        </activity>
+        <activity
+            android:name=".MemoryActivity"
+            android:label="Memory">
+        </activity>
+        <activity
+            android:name=".ColorActivity"
+            android:label="Color">
+        </activity>
+        <activity
             android:name=".AdminActivity"
             android:label="Admin"
             android:parentActivityName=".LoginActivity">
