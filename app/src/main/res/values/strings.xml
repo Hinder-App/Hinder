@@ -19,4 +19,18 @@
         completions."
     </string>
     <string name="title_activity_register">Register</string>
+
+    <!-- Strings related to MenuActivity -->
+    <string name="menu_name">Menu</string>
+    <string name="button_start">Start</string>
+    <string name="button_progress">Progress</string>
+    <string name="button_settings">User Settings</string>
+
+    <!-- Strings related to SettingsActivity -->
+    <string name="text_name">Name</string>
+    <string name="edit_name"></string>
+    <string name="text_username">Username</string>
+    <string name="text_password">Password</string>
+    <string name="text_age">Age</string>
+    <string name="button_save">Save</string>
 </resources>
