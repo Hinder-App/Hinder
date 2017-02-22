@@ -53,10 +53,13 @@ public class LoginActivity extends AppCompatActivity {
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mEmail.getText().toString() == "root@example.com") {
-                    //Go to admin
+                System.out.println(mEmail.getText().toString());
+                System.out.println(mEmail.getText());
+                if (mEmail.getText().toString().equals("root")) {
+                    Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                    startActivity(intent);
                 } else {
-                    //Go to menu
+                    //TODO login authentication
                 }
             }
         });

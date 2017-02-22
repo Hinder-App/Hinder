@@ -30,6 +30,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="hinder.hinder.LoginActivity" />
         </activity>
+        <activity
+            android:name=".AdminActivity"
+            android:label="Admin"
+            android:parentActivityName=".LoginActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="hinder.hinder.LoginActivity" />
+        </activity>
     </application>
 
 </manifest>
