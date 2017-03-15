@@ -30,6 +30,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.RequestQueue;
+
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,12 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity {
 
+    //create a request queue
+    private RequestQueue mRequestQueue;
+
+    //create a
     private AutoCompleteTextView mEmail;
+    private String url = "http://hinderest.herokuapp.com/register";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,4 +83,3 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 }
-
