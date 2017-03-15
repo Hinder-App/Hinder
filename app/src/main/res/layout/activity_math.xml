@@ -44,6 +44,7 @@
         android:id="@+id/edittext_answer"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
+        android:inputType="number"
         android:hint="Type Answer" />
 
     <Button

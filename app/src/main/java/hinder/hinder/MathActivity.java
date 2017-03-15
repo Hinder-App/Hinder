@@ -8,9 +8,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Random;
 
 public class MathActivity extends AppCompatActivity {
-
+    private final Random r = new Random();
+    private int number1;
+    private int number2;
+    private int correctAnswer;
+    private int countCorrectAnswers = 0;
     TextView numberOne;
     TextView mathSymbol;
     TextView numberTwo;
@@ -35,16 +42,69 @@ public class MathActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /*
-                 //check if userInput = correctAnswer; then process information accordingly
-                if () {
-                } else {
-                } */
-                Intent intent = new Intent(MathActivity.this, MemoryActivity.class);
-                startActivity(intent);
+             checkAnswer();
+             loadNewEquation();
+                //Intent intent = new Intent(MathActivity.this, MemoryActivity.class);
+                //startActivity(intent);
             }
         });
+    }
+
+    public void checkAnswer(){
+        //check if userInput = correctAnswer; then process information accordingly
+        int a = Integer.parseInt(answer.getText().toString());
+
+        if(answer!=null) {
+            if(correctAnswer==a) { //userAnswer is correct!
+                Toast.makeText(getApplicationContext(), "Your answer is correct!", Toast.LENGTH_SHORT).show();
+                countCorrectAnswers++;
+                answer=null;
+            }else if(correctAnswer!=a){ //userAnswer is not correct!
+                Toast.makeText(getApplicationContext(), "Your answer is not correct!", Toast.LENGTH_SHORT).show();
+                answer=null;
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "Please input an answer.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
 
         //iterate 15-17 times using for loop and count number of correct answers
+    public void loadNewEquation() {
+        number1 = generateNumber();
+        number2 = generateNumber();
+        if(number1 < number2) { //no negative numbers as answers
+            number1 = number1 + number2; //swap the two values
+            number2 = number1 - number2;
+            number1 = number1 - number2;
+        }
+        numberOne.setText(number1);
+        numberTwo.setText(number2);
+
+        generateMathSymbol();
+        if (mathSymbol.getText().equals("+")){
+            correctAnswer = number1 + number2;
+        }else if(mathSymbol.getText().equals("-")){
+            correctAnswer = number1 - number2;
+        }
+    }
+
+    public void generateMathSymbol() {
+        int min = 0;
+        int max = 2;
+        int rand = r.nextInt(max - min) + min;
+        switch (rand) {
+            case 0: //adding
+                mathSymbol.setText("+");
+            case 1: //subtracting
+                mathSymbol.setText("-");
+        }
+    }
+
+    public int generateNumber() {
+        int min = 0;
+        int max = 21;
+        int rand = r.nextInt(max - min) + min;
+        return rand;
     }
 }
