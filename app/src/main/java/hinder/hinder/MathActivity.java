@@ -93,30 +93,34 @@ public class MathActivity extends AppCompatActivity {
     public void loadNewEquation() {
         number1 = generateNumber();
         number2 = generateNumber();
-        if(number1 < number2) { //no negative numbers as answers
-            number1 = number1 + number2; //swap the two values
-            number2 = number1 - number2;
-            number1 = number1 - number2;
-        }
+
         numberOne.setText(String.valueOf(number1));
         numberTwo.setText(String.valueOf(number2));
 
         generateMathSymbol();
-        if (mathSymbol.getText().equals("+")){
+        if (mathSymbol.getText().toString().equals("+")){
             correctAnswer = number1 + number2;
-        }else if(mathSymbol.getText().equals("-")){
+        }else if(mathSymbol.getText().toString().equals("-")){
+            if(number1 < number2) { //no negative numbers as answers
+                number1 = number1 + number2; //swap the two values
+                number2 = number1 - number2;
+                number1 = number1 - number2;
+                numberOne.setText(String.valueOf(number1));
+                numberTwo.setText(String.valueOf(number2));//remember the numbers are swapped!
+                //so must call the .setText(num) to display/renew the changes made to the numbers
+            }
             correctAnswer = number1 - number2;
         }
     }
 
     public void generateMathSymbol() {
-        int min = 0;
+        int min = 1;
         int max = 2;
-        int rand = r.nextInt(max - min) + min;
-        switch (rand) {
-            case 0: //adding
-                mathSymbol.setText("+");
-            case 1: //subtracting
+        int rand = r.nextInt(max - min+1) + min;
+        if (rand == 1) {
+            mathSymbol.setText("+");
+        }
+        if (rand == 2) {
                 mathSymbol.setText("-");
         }
     }
