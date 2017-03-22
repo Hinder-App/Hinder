@@ -10,13 +10,13 @@ import com.android.volley.toolbox.Volley;
  * Created by lstev030 on 3/15/2017.
  */
 
-public class MySingleton {
-    private static MySingleton mInstance;
+public class DeezNutz {
+    private static DeezNutz mInstance;
     private RequestQueue requestQueue;
     private static Context mCtx;
 
     //Constructor
-    private MySingleton(Context context) {
+    private DeezNutz(Context context) {
         mCtx = context;
         requestQueue = getRequestQueue();
     }
@@ -28,9 +28,9 @@ public class MySingleton {
         return requestQueue;
     }
 
-    public static synchronized MySingleton getInstance(Context context) {
+    public static synchronized DeezNutz getInstance(Context context) {
         if(mInstance == null) {
-            mInstance = new MySingleton(context);
+            mInstance = new DeezNutz(context);
         }
         return mInstance;
     }
