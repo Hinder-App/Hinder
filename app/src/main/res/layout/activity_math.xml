@@ -11,6 +11,13 @@
     tools:context="hinder.hinder.MathActivity">
 
     <TextView
+        android:id="@+id/number_correct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number Correct: 0/15"
+        android:textSize="20dp" />
+
+    <TextView
         android:id="@+id/number_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
