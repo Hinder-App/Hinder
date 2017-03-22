@@ -34,6 +34,7 @@ public class MathActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_math);
 
+
         numberOne = (TextView) findViewById(R.id.number_one);
         mathSymbol = (TextView) findViewById(R.id.math_symbol);
         numberTwo = (TextView) findViewById(R.id.number_two);
@@ -41,6 +42,8 @@ public class MathActivity extends AppCompatActivity {
         numberCorrect = (TextView) findViewById(R.id.number_correct);
 
         numberOfIterations = generateNumberOfIterations();
+        numberCorrect.setText("Number Correct: "+countCorrectAnswers+"/"+numberOfIterations);
+
         //generate random 1-20 numbers and have it assigned to the textviews
         //generate math symbol + or -
         loadNewEquation();
