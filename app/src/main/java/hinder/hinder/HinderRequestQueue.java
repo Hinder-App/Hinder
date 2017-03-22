@@ -10,27 +10,27 @@ import com.android.volley.toolbox.Volley;
  * Created by lstev030 on 3/15/2017.
  */
 
-public class DeezNutz {
-    private static DeezNutz mInstance;
+public class HinderRequestQueue {
+    private static HinderRequestQueue mInstance;
     private RequestQueue requestQueue;
     private static Context mCtx;
 
     //Constructor
-    private DeezNutz(Context context) {
+    private HinderRequestQueue(Context context) {
         mCtx = context;
         requestQueue = getRequestQueue();
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if(requestQueue == null){
             requestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
         }
         return requestQueue;
     }
 
-    public static synchronized DeezNutz getInstance(Context context) {
+    public static synchronized HinderRequestQueue getInstance(Context context) {
         if(mInstance == null) {
-            mInstance = new DeezNutz(context);
+            mInstance = new HinderRequestQueue(context);
         }
         return mInstance;
     }

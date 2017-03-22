@@ -1,36 +1,18 @@
 package hinder.hinder;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -41,21 +23,16 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
-
 /**
- * A login screen that offers login via email/password.
+ * A register screen that registers a new user via name/age/email/password.
  */
 public class RegisterActivity extends AppCompatActivity {
-    String url = "http://hinderest.herokuapp.com/register";
+    String url = "http://hinderest.herokuapp.com/users";
 
-    final AutoCompleteTextView etName = (AutoCompleteTextView) findViewById(R.id.name);
-    final AutoCompleteTextView etAge = (AutoCompleteTextView) findViewById(R.id.age);
-    final AutoCompleteTextView etEmail = (AutoCompleteTextView) findViewById(R.id.email);
-    final EditText etPassword = (EditText) findViewById(R.id.password);
+    public static final String TAG = RegisterActivity.class.getName();
+    Button mEmailSignInButton;
+    AutoCompleteTextView etName, etAge, etEmail;
+    EditText etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +41,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         setupActionBar();
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        etName = (AutoCompleteTextView) findViewById(R.id.name);
+        etAge = (AutoCompleteTextView) findViewById(R.id.age);
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -79,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     System.out.println(e);
                 }
-
+                url = url + "/" + etEmail.getText().toString();
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -94,18 +75,23 @@ public class RegisterActivity extends AppCompatActivity {
                 });
 
                 // Access the RequestQueue through your singleton class.
-                MySingleton.getInstance(RegisterActivity.this).addToRequestQueue(jsObjRequest);
+                HinderRequestQueue.getInstance(RegisterActivity.this).addToRequestQueue(jsObjRequest);
             }
         });
     }
 
     private void onRes(JSONObject response) {
+        etName = (AutoCompleteTextView) findViewById(R.id.name);
+        etAge = (AutoCompleteTextView) findViewById(R.id.age);
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
         try {
             String status = response.getString("status");
 
             if (status.equals("success")) {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
                 startActivity(intent);
+                Log.i(TAG, "Response: " + response.toString());
             } else {
                 etName.setText("Name: " + response.getJSONObject("data").getJSONObject("user").getString("name"));
                 etAge.setText("Age: " + response.getJSONObject("data").getJSONObject("user").getInt("age"));
