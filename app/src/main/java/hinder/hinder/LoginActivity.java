@@ -1,68 +1,76 @@
 package hinder.hinder;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private AutoCompleteTextView mEmail;
+    AutoCompleteTextView etEmail;
+    EditText etPassword;
+    private String url = "http://hinderest.herokuapp.com/users";
+    public static final String TAG = LoginActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(mEmail.getText().toString());
-                System.out.println(mEmail.getText());
-                if (mEmail.getText().toString().equals("root")) {
-                    Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                    startActivity(intent);
+                System.out.println(etEmail.getText().toString());
+                System.out.println(etEmail.getText());
+
+                // Put info in a JSONObject and send it to get a response
+                JSONObject request = new JSONObject();
+                try {
+                    request.put("username", etEmail.getText().toString());
+                    request.put("password", etPassword.getText().toString());
+                } catch (JSONException e) {
+                    Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    System.out.println(e);
                 }
+                url = url + "/" + etEmail.getText().toString();
+                JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        onRes(response);
+                    }
+                }, new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
+                    }
+                });
+                // Access the RequestQueue through your singleton class.
+                HinderRequestQueue.getInstance(LoginActivity.this).addToRequestQueue(jsObjRequest);
             }
         });
 
@@ -75,5 +83,29 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-}
 
+    private void onRes(JSONObject response) {
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
+        try {
+            String status = response.getString("status");
+
+            if (status.equals("success")) {
+                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                startActivity(intent);
+                Log.i(TAG, "Response: " + response.toString());
+            } else {
+                etEmail.setText("Email: " + response.getJSONObject("data").getJSONObject("user").getString("username"));
+                etPassword.setText("Password: " + response.getJSONObject("data").getJSONObject("user").getString("password"));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                builder.setMessage("Login Failed")
+                        .setNegativeButton("Retry", null)
+                        .create()
+                        .show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+}

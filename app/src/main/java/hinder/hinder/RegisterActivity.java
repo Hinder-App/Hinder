@@ -1,59 +1,112 @@
 package hinder.hinder;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-import static android.Manifest.permission.READ_CONTACTS;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
- * A login screen that offers login via email/password.
+ * A register screen that registers a new user via name/age/email/password.
  */
 public class RegisterActivity extends AppCompatActivity {
+    String url = "http://hinderest.herokuapp.com/users";
+
+    public static final String TAG = RegisterActivity.class.getName();
+    Button mEmailSignInButton;
+    AutoCompleteTextView etName, etAge, etEmail;
+    EditText etPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
         setupActionBar();
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        etName = (AutoCompleteTextView) findViewById(R.id.name);
+        etAge = (AutoCompleteTextView) findViewById(R.id.age);
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
+                JSONObject request = new JSONObject();
+                try {
+                    request.put("username", etEmail.getText().toString());
+                    request.put("password", etPassword.getText().toString());
+                    request.put("name", etName.getText().toString());
+                    request.put("age", new Integer(etAge.getText().toString()));
+                } catch (JSONException e) {
+                    Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    System.out.println(e);
+                }
+                url = url + "/" + etEmail.getText().toString();
+                JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        onRes(response);
+                    }
+                }, new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        error.printStackTrace();
+                    }
+                });
+
+                // Access the RequestQueue through your singleton class.
+                HinderRequestQueue.getInstance(RegisterActivity.this).addToRequestQueue(jsObjRequest);
             }
         });
+    }
+
+    private void onRes(JSONObject response) {
+        etName = (AutoCompleteTextView) findViewById(R.id.name);
+        etAge = (AutoCompleteTextView) findViewById(R.id.age);
+        etEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        etPassword = (EditText) findViewById(R.id.password);
+        try {
+            String status = response.getString("status");
+
+            if (status.equals("success")) {
+                Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
+                startActivity(intent);
+                Log.i(TAG, "Response: " + response.toString());
+            } else {
+                etName.setText("Name: " + response.getJSONObject("data").getJSONObject("user").getString("name"));
+                etAge.setText("Age: " + response.getJSONObject("data").getJSONObject("user").getInt("age"));
+                etEmail.setText("Email: " + response.getJSONObject("data").getJSONObject("user").getString("username"));
+                etPassword.setText("Password: " + response.getJSONObject("data").getJSONObject("user").getString("password"));
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                builder.setMessage("Registration Failed")
+                        .setNegativeButton("Retry", null)
+                        .create()
+                        .show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -67,4 +120,3 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 }
-
