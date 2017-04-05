@@ -66,7 +66,7 @@ public class MathActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(90000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(9000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText(""+String.format(FORMAT,
@@ -85,12 +85,19 @@ public class MathActivity extends AppCompatActivity {
                 if(gameCount<2){
                     loadActivity();
                 }else if(gameCount>=2){
+                    numberOne.setVisibility(View.INVISIBLE);
+                    mathSymbol.setVisibility(View.INVISIBLE);
+                    numberTwo.setVisibility(View.INVISIBLE);
+                    answer.setVisibility(View.INVISIBLE);
+                    submitButton.setVisibility(View.INVISIBLE);
+
                     JSONObject request = new JSONObject();
                     try {
+                        //TODO: need to add more here after discussing with miguel ab json structure!
                         request.put("correct", countCorrectAnswers);
                         request.put("total", total);
                     } catch (JSONException e) {
-                        Toast.makeText(MathActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MathActivity.this, "Something went wrong: JSONException", Toast.LENGTH_SHORT).show();
                         System.out.println(e);
                     }
 
@@ -102,7 +109,7 @@ public class MathActivity extends AppCompatActivity {
                     }, new Response.ErrorListener(){
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(MathActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MathActivity.this, "Something went wrong: VolleyError", Toast.LENGTH_SHORT).show();
                             error.printStackTrace();
                         }
                     });
