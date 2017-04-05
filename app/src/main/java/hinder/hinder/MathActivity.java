@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 import android.os.CountDownTimer;
 
-import android.annotation.TargetApi;
 import android.support.v7.app.AlertDialog;
 
 import android.util.Log;
@@ -37,10 +36,16 @@ public class MathActivity extends AppCompatActivity {
     private int number1;
     private int number2;
     private int correctAnswer;
-    private int countCorrectAnswers = 0; //send to backend
-    private int total = 0; //send to backend
+    private int countCorrectAnswers = 0;
+    private int totalAnswers = 0;
     private int a; //correct answer in int
     private int gameCount = 0;
+
+    private int gameOneCount = 0;
+    private int gameOneTotal = 0;
+
+    private int gameTwoCount = 0;
+    private int gameTwoTotal = 0;
 
     TextView numberOne;
     TextView mathSymbol;
@@ -61,6 +66,10 @@ public class MathActivity extends AppCompatActivity {
     public void loadActivity(){ //do all work here
         setContentView(R.layout.activity_math);
 
+        //clear variables
+        countCorrectAnswers = 0;
+        totalAnswers = 0;
+
         //increase game count
         gameCount++;
 
@@ -80,11 +89,16 @@ public class MathActivity extends AppCompatActivity {
             public void onFinish() {
                 timer.setText("Time up!");
 
-                //send backend number of correct answers and total
+                //send backend number of correct answers and totalAnswers
                 //CHECK IF ITs SECOND ITERATION OF GAME!
                 if(gameCount<2){
+                    gameOneCount=countCorrectAnswers;
+                    gameOneTotal= totalAnswers;
                     loadActivity();
                 }else if(gameCount>=2){
+                    gameTwoCount=countCorrectAnswers;
+                    gameTwoTotal= totalAnswers;
+
                     numberOne.setVisibility(View.INVISIBLE);
                     mathSymbol.setVisibility(View.INVISIBLE);
                     numberTwo.setVisibility(View.INVISIBLE);
@@ -94,8 +108,10 @@ public class MathActivity extends AppCompatActivity {
                     JSONObject request = new JSONObject();
                     try {
                         //TODO: need to add more here after discussing with miguel ab json structure!
-                        request.put("correct", countCorrectAnswers);
-                        request.put("total", total);
+                        request.put("correct", gameOneCount);
+                        request.put("totalAnswers", gameOneTotal);
+                        request.put("correct", gameTwoCount);
+                        request.put("totalAnswers", gameTwoTotal);
                     } catch (JSONException e) {
                         Toast.makeText(MathActivity.this, "Something went wrong: JSONException", Toast.LENGTH_SHORT).show();
                         System.out.println(e);
@@ -172,7 +188,7 @@ public class MathActivity extends AppCompatActivity {
         numberTwo.setText(String.valueOf(number2));
 
         generateMathSymbol();
-        total++;
+        totalAnswers++;
 
         if (mathSymbol.getText().toString().equals("+")){
             correctAnswer = number1 + number2;
