@@ -11,33 +11,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center">
-    </TableRow>
-    <TableRow android:id="@+id/TableRow05"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tries"
-            android:paddingLeft="50dp"
+            android:layout_span="2"
             android:layout_weight="1">
+        </TextView>
+
+
+    </TableRow>
+    <TableRow android:id="@+id/TableRow05"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+
+        android:gravity="center">
+        <TextView
+            android:id="@+id/text_countdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Countdown Timer:"
+            android:textSize="20dp"
+            android:paddingTop="20dp"
+            android:gravity="center">
         </TextView>
     </TableRow>
     <TableRow
         android:id="@+id/TableRow01"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" android:gravity="center">
+        android:layout_gravity="center"
+        android:paddingTop="50dp"
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Find the matching pairs!"
-            android:visibility="visible"
-            android:textSize="20sp"
-            android:paddingTop="20sp"
-            android:textColor="#000000"
-            android:id="@+id/mainTitle">
+            android:layout_gravity="center"
+            android:id="@+id/info"
+            android:paddingTop="30dp"
+            android:layout_weight="4">
         </TextView>
     </TableRow>
     <TableRow
@@ -52,6 +65,5 @@
         android:layout_height="wrap_content"
         android:gravity="center">
     </TableRow>
-
     </LinearLayout>
 </TableLayout>
