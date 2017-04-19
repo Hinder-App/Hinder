@@ -106,8 +106,9 @@ public class MathActivity extends AppCompatActivity {
                     answer.setText("");
 
                     try {
-                        Thread.sleep(3000);
+                        Thread.sleep(5000);
                     }catch(InterruptedException i){
+                        Toast.makeText(MathActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();
                     }
                     loadActivity();
                 }else if(gameCount>=2){
@@ -120,6 +121,13 @@ public class MathActivity extends AppCompatActivity {
                     answer.setVisibility(View.INVISIBLE);
                     submitButton.setVisibility(View.INVISIBLE);
 
+                    try {
+                        Thread.sleep(5000);
+                    }catch(InterruptedException i){
+                        Toast.makeText(MathActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();
+                    }
+
+                    /*
                     JSONObject request = new JSONObject();
                     try {
                         //shape game data
@@ -191,6 +199,7 @@ public class MathActivity extends AppCompatActivity {
 
                     // Access the RequestQueue through your singleton class.
                     HinderRequestQueue.getInstance(MathActivity.this).addToRequestQueue(jsObjRequest);
+                    */
                 }
             }
         }.start();
@@ -284,6 +293,7 @@ public class MathActivity extends AppCompatActivity {
         return rand;
     }
 
+    /*
     //backend response
     private void onRes(JSONObject response) {
         try {
@@ -319,4 +329,5 @@ public class MathActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+    */
 }
