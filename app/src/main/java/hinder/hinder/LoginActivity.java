@@ -92,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
+                intent.putExtra("USERNAME", etEmail.getText().toString());
                 startActivity(intent);
                 Log.i(TAG, "Response: " + response.toString());
             } else {

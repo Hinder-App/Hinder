@@ -90,6 +90,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
+                intent.putExtra("USERNAME", etEmail.getText().toString());
                 startActivity(intent);
                 Log.i(TAG, "Response: " + response.toString());
             } else {

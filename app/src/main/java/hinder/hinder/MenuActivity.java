@@ -3,6 +3,7 @@ package hinder.hinder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -13,11 +14,15 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        final String username = getIntent().getStringExtra("USERNAME");
+        Log.i("USERNAME:", username);
+
         Button mStartButton = (Button) findViewById(R.id.button_start);
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, MathActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
             }
         });
@@ -27,6 +32,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, SettingsActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
             }
         });
@@ -36,6 +42,7 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MenuActivity.this, ProgressActivity.class);
+                intent.putExtra("USERNAME", username);
                 startActivity(intent);
             }
         });
