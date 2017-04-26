@@ -52,15 +52,13 @@ public class ColorActivity extends AppCompatActivity {
     int memTwoTotal;
 
     private String url;
-    public static final String TAG = MathActivity.class.getName();
+    public static final String TAG = ColorActivity.class.getName();
 
     //
-    private static int ROW_COUNT = 3;
-    private static int COL_COUNT = 3;
+    private static int ROW_COUNT = 4;
+    private static int COL_COUNT = 4;
     private Context context;
-    private Drawable backImage;
     private int [] [] cards;
-    private List<Drawable> images;
 
     private ColorButtonListener buttonListener;
 
@@ -105,7 +103,6 @@ public class ColorActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_color);
         handler = new ColorUpdateCardsHandler();
-        backImage = getResources().getDrawable(R.drawable.icon);
 
         buttonListener = new ColorButtonListener();
         mainTable = (TableLayout) findViewById(R.id.TableLayout03);
@@ -115,7 +112,7 @@ public class ColorActivity extends AppCompatActivity {
 
         //timer!
         timer = (TextView) findViewById(R.id.text_countdown);
-        new CountDownTimer(9000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(3000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
@@ -367,7 +364,7 @@ public class ColorActivity extends AppCompatActivity {
     private void sendJSON(){
                     JSONObject request = new JSONObject();
                     try {
-                        //shape game data
+                        //color game data
                         JSONArray arrayElementTwoArray = new JSONArray();
 
                         JSONObject arrayElementTwoArrayElementOne = new JSONObject();
@@ -420,7 +417,10 @@ public class ColorActivity extends AppCompatActivity {
                         Toast.makeText(ColorActivity.this, "Something went wrong: JSONException", Toast.LENGTH_SHORT).show();
                         System.out.println(e);
                     }
+                    username = getIntent().getStringExtra("USERNAME");
+                    Log.i("USERNAME:", username);
                     url = "http://hinderest.herokuapp.com/users/"+username+"/sessions";
+                    Log.i("URL", url);
                     JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {

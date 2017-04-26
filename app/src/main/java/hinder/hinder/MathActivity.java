@@ -72,7 +72,7 @@ public class MathActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(9000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(3000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText(""+String.format(FORMAT,
@@ -191,7 +191,7 @@ public class MathActivity extends AppCompatActivity {
             mathSymbol.setText("+");
         }
         if (rand == 2) {
-                mathSymbol.setText("-");
+            mathSymbol.setText("-");
         }
     }
 
