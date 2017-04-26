@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 public class MenuActivity extends AppCompatActivity {
     TextView information;
-
+    public final static String USERNAME = "Username:";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +46,11 @@ public class MenuActivity extends AppCompatActivity {
         mProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent loginIntent = getIntent();
+                String username = loginIntent.getStringExtra(LoginActivity.USERNAME);
+                Log.i("Username", username);
                 Intent intent = new Intent(MenuActivity.this, ProgressActivity.class);
-                intent.putExtra("USERNAME", username);
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
             }
         });

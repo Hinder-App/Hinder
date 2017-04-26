@@ -10,17 +10,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="hinder.hinder.ProgressActivity">
 
-    <TextView
+    <!--<TextView
         android:id="@+id/linetext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Progress"
         android:textSize="16dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"/>-->
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+    <com.jjoe64.graphview.GraphView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/graph" />
 
 </RelativeLayout>

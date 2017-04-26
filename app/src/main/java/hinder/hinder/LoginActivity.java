@@ -32,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     private String url = "http://hinderest.herokuapp.com/users";
     public static final String TAG = LoginActivity.class.getName();
 
+    public final static String USERNAME = "Username:";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +93,10 @@ public class LoginActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", etEmail.getText().toString());
+                String username = etEmail.getText().toString();
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
+                Log.i("Username", username);
                 Log.i(TAG, "Response: " + response.toString());
             } else {
                 etEmail.setText("Email: " + response.getJSONObject("data").getJSONObject("user").getString("username"));
