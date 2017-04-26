@@ -74,14 +74,14 @@ public class ColorActivity extends AppCompatActivity {
 
     private final Random r = new Random();
 
-    private int countCorrectAnswers = 0;
-    private int gameCount = 0;
+    private int countCorrectAnswers = 10;
+    private int gameCount = 10;
 
-    private int gameOneCount = 0;
-    private int gameOneTime = 0;
+    private int gameOneCount = 10;
+    private int gameOneTime = 30000;
 
-    private int gameTwoCount = 0;
-    private int gameTwoTime= 0;
+    private int gameTwoCount = 10;
+    private int gameTwoTime= 10;
 
     //timer
     TextView timer;
@@ -112,7 +112,7 @@ public class ColorActivity extends AppCompatActivity {
 
         //timer!
         timer = (TextView) findViewById(R.id.text_countdown);
-        new CountDownTimer(3000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(10000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
@@ -129,13 +129,13 @@ public class ColorActivity extends AppCompatActivity {
                 //CHECK IF ITs SECOND ITERATION OF GAME!
                 if (gameCount < 2) {
                     gameOneCount = countCorrectAnswers;
-                    gameOneTime = 0;
+                    gameOneTime = 30000;
 
                     Toast.makeText(ColorActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                     loadActivity();
                 } else if (gameCount >= 2) {
                     gameTwoCount = countCorrectAnswers;
-                    gameTwoTime = 0;
+                    gameTwoTime = 30000;
                     sendJSON();
                 }
             }
@@ -258,7 +258,7 @@ public class ColorActivity extends AppCompatActivity {
         }
 
         public void checkCards(){
-            sendJSON();
+            //sendJSON();
             /*if(cards[secondCard.x][secondCard.y] == cards[firstCard.x][firstCard.y]){
                 firstCard.button.setVisibility(View.INVISIBLE);
                 countCorrectAnswers++;
@@ -352,13 +352,13 @@ public class ColorActivity extends AppCompatActivity {
         //memory
         memOneCount = getIntent().getIntExtra("MEM_ONE_COUNT", 0);
         Log.i("MEM_ONE_COUNT:", Integer.toString(memOneCount));
-        memOneTotal = getIntent().getIntExtra("MEM_ONE_TOTAL", 0);
+        memOneTotal = getIntent().getIntExtra("MEM_ONE_TIME", 0);
         Log.i("MEM_ONE_TOTAL:", Integer.toString(memOneTotal));
 
         memTwoCount = getIntent().getIntExtra("MEM_TWO_COUNT", 0);
         Log.i("MEM_TWO_COUNT:", Integer.toString(memTwoCount));
-        memTwoTotal = getIntent().getIntExtra("MEM_TWO_COUNT", 0);
-        Log.i("MEM_TWO_COUNT:", Integer.toString(memTwoTotal));
+        memTwoTotal = getIntent().getIntExtra("MEM_TWO_TIME", 0);
+        Log.i("MEM_TWO_TOTAL:", Integer.toString(memTwoTotal));
     }
 
     private void sendJSON(){
@@ -455,6 +455,9 @@ public class ColorActivity extends AppCompatActivity {
                         .setNegativeButton("Retry", null)
                         .create()
                         .show();
+                Intent intent = new Intent(ColorActivity.this, MenuActivity.class);
+                intent.putExtra("USERNAME", username);
+                startActivity(intent);
             }
         } catch (JSONException e) {
             e.printStackTrace();

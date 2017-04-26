@@ -28,7 +28,7 @@ public class MathActivity extends AppCompatActivity {
     private int number2;
     private int correctAnswer;
     private int countCorrectAnswers = 0;
-    private int totalAnswers = 0;
+    private int totalAnswers = 1;
     private int a; //correct answer in int
     private int gameCount = 0;
 
@@ -65,14 +65,14 @@ public class MathActivity extends AppCompatActivity {
 
         //clear variables
         countCorrectAnswers = 0;
-        totalAnswers = 0;
+        totalAnswers = 1;
 
         //increase game count
         gameCount++;
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(3000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(30000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText(""+String.format(FORMAT,
@@ -92,6 +92,7 @@ public class MathActivity extends AppCompatActivity {
                     gameOneCount=countCorrectAnswers;
                     gameOneTotal= totalAnswers;
                     Toast.makeText(MathActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
+
                     loadActivity();
                 }else if(gameCount>=2){
                     gameTwoCount=countCorrectAnswers;
@@ -103,11 +104,6 @@ public class MathActivity extends AppCompatActivity {
                     answer.setVisibility(View.INVISIBLE);
                     submitButton.setVisibility(View.INVISIBLE);
 
-                    try {
-                        Thread.sleep(3000);
-                    }catch(InterruptedException i){
-                        Toast.makeText(MathActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();
-                    }
                     sendDataIntent();
                 }
             }

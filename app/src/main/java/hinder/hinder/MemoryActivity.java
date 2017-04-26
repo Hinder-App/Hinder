@@ -95,7 +95,7 @@ public class MemoryActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(3000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(40000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText("" + String.format(FORMAT,
@@ -113,19 +113,16 @@ public class MemoryActivity extends AppCompatActivity {
                 //CHECK IF ITs SECOND ITERATION OF GAME!
                 if (gameCount < 2) {
                     gameOneCount = countCorrectAnswers;
-                    gameOneTime = 0;
+                    gameOneTime = 40000;
 
                     Toast.makeText(MemoryActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                     loadActivity();
                 } else if (gameCount >= 2) {
                     gameTwoCount = countCorrectAnswers;
-                    gameTwoTime = 0;
-                    try {
-                        Thread.sleep(5000);
-                        sendDataIntent();
-                    } catch (InterruptedException i) {
-                        Toast.makeText(MemoryActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();
-                    }
+                    gameTwoTime = 40000;
+
+                    sendDataIntent();
+
                 }
             }
         }.start();
@@ -338,8 +335,8 @@ public class MemoryActivity extends AppCompatActivity {
                         }
                         Log.i("MEM_ONE_TIME:", Integer.toString(gameOneTime));
                         try {
-                            Thread.sleep(1000);
                             Toast.makeText(MemoryActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
+                            Thread.sleep(1000);
                             loadActivity();
                         } catch (InterruptedException i) {
                             Toast.makeText(MemoryActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();

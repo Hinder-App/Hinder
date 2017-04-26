@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/info"
         android:text="INFO PLACED HERE"
-        android:paddingTop="20dp"
+        android:paddingTop="10dp"
         android:gravity="center_horizontal"
         android:textSize="20dp">
     </TextView>
