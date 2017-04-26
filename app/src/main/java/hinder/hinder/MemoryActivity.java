@@ -28,7 +28,13 @@ import android.widget.TableRow;
 
 
 public class MemoryActivity extends AppCompatActivity {
-    String username= "example";
+    //intent-extras
+    String username;
+    int mathOneCount;
+    int mathOneTotal;
+    int mathTwoCount;
+    int mathTwoTotal;
+
     private int countCorrectAnswers = 0;
 
     private int gameCount = 0;
@@ -61,9 +67,13 @@ public class MemoryActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       // username = getIntent().getStringExtra("USERNAME");
-      //  Log.i("USERNAME:", username);
+        receiveDataIntent();
         loadActivity();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
     }
 
     private void loadActivity(){
@@ -85,7 +95,7 @@ public class MemoryActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(90000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(9000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText("" + String.format(FORMAT,
@@ -104,12 +114,8 @@ public class MemoryActivity extends AppCompatActivity {
                 if (gameCount < 2) {
                     gameOneCount = countCorrectAnswers;
                     gameOneTime = 0;
-                    try {
-                        Thread.sleep(5000);
-                        Toast.makeText(MemoryActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
-                    } catch (InterruptedException i) {
-                        Toast.makeText(MemoryActivity.this, "Something went wrong:InterruptedException", Toast.LENGTH_SHORT).show();
-                    }
+
+                    Toast.makeText(MemoryActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                     loadActivity();
                 } else if (gameCount >= 2) {
                     gameTwoCount = countCorrectAnswers;
@@ -125,6 +131,23 @@ public class MemoryActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void receiveDataIntent(){
+        username = getIntent().getStringExtra("USERNAME");
+        Log.i("USERNAME:", username);
+
+        mathOneCount = getIntent().getIntExtra("MATH_ONE_COUNT", 0);
+        Log.i("MATH_ONE_COUNT:", Integer.toString(mathOneCount));
+
+        mathOneTotal = getIntent().getIntExtra("MATH_ONE_TOTAL", 0);
+        Log.i("MATH_ONE_TOTAL:", Integer.toString(mathOneTotal));
+
+        mathTwoCount = getIntent().getIntExtra("MATH_TWO_COUNT", 0);
+        Log.i("MATH_TWO_COUNT:", Integer.toString(mathTwoCount));
+
+        mathTwoTotal = getIntent().getIntExtra("MATH_TWO_TOTAL", 0);
+        Log.i("MATH_TWO_TOTAL:", Integer.toString(mathTwoTotal));
+    }
+
     private void sendDataIntent(){
         Intent intent = new Intent(MemoryActivity.this, ColorActivity.class);
 
@@ -138,6 +161,16 @@ public class MemoryActivity extends AppCompatActivity {
         Log.i("MEM_TWO_COUNT:", Integer.toString(gameTwoCount));
         intent.putExtra("MEM_TWO_TIME", gameTwoTime);
         Log.i("MEM_TWO_TIME:", Integer.toString(gameTwoTime));
+
+        intent.putExtra("MATH_ONE_COUNT", mathOneCount);
+        Log.i("MATH_ONE_COUNT:", Integer.toString(mathOneCount));
+        intent.putExtra("MATH_ONE_TOTAL", mathOneTotal);
+        Log.i("MATH_ONE_TOTAL:", Integer.toString(mathOneTotal));
+        intent.putExtra("MATH_TWO_COUNT", mathTwoCount);
+        Log.i("MATH_TWO_COUNT:", Integer.toString(mathTwoCount));
+        intent.putExtra("MATH_TWO_TOTAL", mathTwoTotal);
+        Log.i("MATH_TWO_TOTAL:", Integer.toString(mathTwoTotal));
+
         startActivity(intent);
     }
 
