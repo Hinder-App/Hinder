@@ -1,8 +1,10 @@
 package hinder.hinder;
 
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -198,21 +200,54 @@ public class ProgressActivity extends AppCompatActivity {
                         series.setOnDataPointTapListener(new OnDataPointTapListener() {
                             @Override
                             public void onTap(Series series, DataPointInterface dataPoint) {
-                                Toast.makeText(ProgressActivity.this, "Shape Score: " + dataPoint, Toast.LENGTH_SHORT).show();
+                                new AlertDialog.Builder(ProgressActivity.this)
+                                        .setTitle("Shape Score")
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setNegativeButton(
+                                                "Ok",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                }
+                                        )
+                                        .show();
                             }
                         });
 
                         series2.setOnDataPointTapListener(new OnDataPointTapListener() {
                             @Override
                             public void onTap(Series series, DataPointInterface dataPoint) {
-                                Toast.makeText(ProgressActivity.this, "Math Score: " + dataPoint, Toast.LENGTH_SHORT).show();
+                                new AlertDialog.Builder(ProgressActivity.this)
+                                        .setTitle("Math Score")
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setNegativeButton(
+                                                "Ok",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                }
+                                        )
+                                        .show();
                             }
                         });
 
                         series3.setOnDataPointTapListener(new OnDataPointTapListener() {
                             @Override
                             public void onTap(Series series, DataPointInterface dataPoint) {
-                                Toast.makeText(ProgressActivity.this, "Memory Score: " + dataPoint, Toast.LENGTH_SHORT).show();
+                                new AlertDialog.Builder(ProgressActivity.this)
+                                        .setTitle("Memory Score")
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setNegativeButton(
+                                                "Ok",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                    }
+                                                }
+                                        )
+                                        .show();
                             }
                         });
 
