@@ -63,12 +63,24 @@ public class ProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_progress);
 
         Intent intent = getIntent();
-        final String username = intent.getStringExtra(MenuActivity.USERNAME);
-        if(username.equals("admin")) {
-            url = "https://hinderest.herokuapp.com/users/miyagi@example.com/scores";
+        final String username;
+
+        if (intent.getStringExtra(MenuActivity.USERNAME) != null) {
+            username = intent.getStringExtra(MenuActivity.USERNAME);
+            if(username.equals("admin")) {
+                url = "https://hinderest.herokuapp.com/users/miyagi@example.com/scores";
+            } else {
+                url = "https://hinderest.herokuapp.com/users/" + username + "/scores/10";
+            }
         } else {
-            url = "https://hinderest.herokuapp.com/users/" + username + "/scores/10";
+            username = intent.getStringExtra("USERNAME");
+            if(username.equals("admin")) {
+                url = "https://hinderest.herokuapp.com/users/miyagi@example.com/scores";
+            } else {
+                url = "https://hinderest.herokuapp.com/users/" + username + "/scores/10";
+            }
         }
+
         // Create Volley request queue
         requestQueue = Volley.newRequestQueue(this);
         // Scores
