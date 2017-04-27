@@ -15,8 +15,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -68,10 +69,10 @@ public class ColorActivity extends AppCompatActivity {
     private int gameCount = 0;
 
     private int gameOneCount = 0;
-    private int gameOneTime = 0;
+    private int gameOneTotal = 0;
 
     private int gameTwoCount = 0;
-    private int gameTwoTime= 0;
+    private int gameTwoTotal = 0;
 
     //timer
     TextView timer;
@@ -119,13 +120,13 @@ public class ColorActivity extends AppCompatActivity {
                 //CHECK IF ITs SECOND ITERATION OF GAME!
                 if (gameCount < 2) {
                     gameOneCount = countCorrectAnswers;
-                    gameOneTime = totalAnswers;
+                    gameOneTotal = totalAnswers;
 
                     Toast.makeText(ColorActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                     loadActivity();
                 } else if (gameCount >= 2) {
                     gameTwoCount = countCorrectAnswers;
-                    gameTwoTime = totalAnswers;
+                    gameTwoTotal = totalAnswers;
                     sendJSON();
                 }
             }
@@ -289,16 +290,16 @@ public class ColorActivity extends AppCompatActivity {
 
                         JSONObject arrayElementTwoArrayElementOne = new JSONObject();
                         arrayElementTwoArrayElementOne.put("correct", gameOneCount);
-                        arrayElementTwoArrayElementOne.put("total", gameOneTime);
+                        arrayElementTwoArrayElementOne.put("total", gameOneTotal);
 
                         JSONObject arrayElementTwoArrayElementTwo = new JSONObject();
                         arrayElementTwoArrayElementTwo.put("correct", gameTwoCount);
-                        arrayElementTwoArrayElementTwo.put("total", gameTwoTime);
+                        arrayElementTwoArrayElementTwo.put("total", gameTwoTotal);
 
                         arrayElementTwoArray.put(arrayElementTwoArrayElementOne);
                         arrayElementTwoArray.put(arrayElementTwoArrayElementTwo);
 
-                        request.put("shapeGames", arrayElementTwoArray);
+                        request.put("colorGames", arrayElementTwoArray);
 
                         //math game data
 
@@ -375,9 +376,16 @@ public class ColorActivity extends AppCompatActivity {
                         .setNegativeButton("Retry", null)
                         .create()
                         .show();
-                Intent intent = new Intent(ColorActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", username);
-                startActivity(intent);
+                TimerTask tt = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(ColorActivity.this, MenuActivity.class);
+                        intent.putExtra("USERNAME", username);
+                        startActivity(intent);
+                    }
+                };
+                Timer t = new Timer(false);
+                t.schedule(tt, 1300);
             }
         } catch (JSONException e) {
             e.printStackTrace();
