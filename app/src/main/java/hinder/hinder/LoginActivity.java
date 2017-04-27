@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     System.out.println(e);
                 }
-                url = url + "/" + etEmail.getText().toString();
+                String url = "http://hinderest.herokuapp.com/users" + "/" + etEmail.getText().toString();
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener(){
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Incorrect Email or Password", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });
