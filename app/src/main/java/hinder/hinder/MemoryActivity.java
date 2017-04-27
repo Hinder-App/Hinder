@@ -95,7 +95,7 @@ public class MemoryActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(40000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(10000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText("" + String.format(FORMAT,

@@ -72,7 +72,7 @@ public class MathActivity extends AppCompatActivity {
 
         //timer!
         timer =(TextView)findViewById(R.id.text_countdown);
-        new CountDownTimer(30000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(10000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
 
                 timer.setText(""+String.format(FORMAT,
@@ -123,6 +123,7 @@ public class MathActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                totalAnswers++;
                 checkAnswer();
             }
         });
@@ -162,7 +163,6 @@ public class MathActivity extends AppCompatActivity {
         numberTwo.setText(String.valueOf(number2));
 
         generateMathSymbol();
-        totalAnswers++;
 
         if (mathSymbol.getText().toString().equals("+")){
             correctAnswer = number1 + number2;
