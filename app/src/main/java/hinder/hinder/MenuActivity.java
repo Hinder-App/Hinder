@@ -17,9 +17,7 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
 
         information = (TextView) findViewById(R.id.information);
-
-
-        final String username = getIntent().getStringExtra("USERNAME");
+        final String username = getIntent().getStringExtra(LoginActivity.USERNAME);
         Log.i("USERNAME:", username);
 
         Button mStartButton = (Button) findViewById(R.id.button_start);

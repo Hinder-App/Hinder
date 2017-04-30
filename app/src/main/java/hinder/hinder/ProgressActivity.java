@@ -42,11 +42,11 @@ public class ProgressActivity extends AppCompatActivity {
     private static LineGraphSeries<DataPoint> series3;
 
     // Arrays hold scores
-    private static ArrayList<Integer> shapeList = new ArrayList<>();
+    private static ArrayList<Integer> colorList = new ArrayList<>();
     private static ArrayList<Integer> mathList = new ArrayList<>();
     private static ArrayList<Integer> memoryList = new ArrayList<>();
 
-    private static ArrayList<Date> shapeDate = new ArrayList<>();
+    private static ArrayList<Date> colorDate = new ArrayList<>();
     private static ArrayList<Date> mathDate = new ArrayList<>();
     private static ArrayList<Date> memoryDate = new ArrayList<>();
 
@@ -80,6 +80,7 @@ public class ProgressActivity extends AppCompatActivity {
                 url = "https://hinderest.herokuapp.com/users/" + username + "/scores/10";
             }
         }
+        Log.i("URL", url);
 
         // Create Volley request queue
         requestQueue = Volley.newRequestQueue(this);
@@ -93,13 +94,13 @@ public class ProgressActivity extends AppCompatActivity {
                         JSONObject data = response.getJSONObject("data");
                         JSONObject scores = data.getJSONObject("scores");
 
-                        // Shape Scores
-                        JSONArray shapeScores = scores.getJSONArray("shapeScores");
-                        for(int i = 0; i < shapeScores.length(); i++) {
-                            JSONObject shapeScore = shapeScores.getJSONObject(i);
-                            shapeList.add(i, shapeScore.getInt("score"));
+                        // Color Scores
+                        JSONArray colorScores = scores.getJSONArray("colorScores");
+                        for(int i = 0; i < colorScores.length(); i++) {
+                            JSONObject colorScore = colorScores.getJSONObject(i);
+                            colorList.add(i, colorScore.getInt("score"));
                             // Get date as string
-                            String stringDate = shapeScore.getString("date");
+                            String stringDate = colorScore.getString("date");
                             String editString = stringDate.substring(0, stringDate.length() - 5);
                             Log.i("String Date", editString);
                             Date isoDate = null;
@@ -117,8 +118,8 @@ public class ProgressActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                             Log.i("Date", readDate.toString());
-                            shapeDate.add(i, readDate);
-                            Log.i("shapeList[i]:", Integer.toString(shapeList.get(i)));
+                            colorDate.add(i, readDate);
+                            Log.i("colorList[i]:", Integer.toString(colorList.get(i)));
                         }
 
                         // Math Scores
@@ -178,10 +179,10 @@ public class ProgressActivity extends AppCompatActivity {
                         GraphView graph = (GraphView) findViewById(R.id.graph);
 
                         // declare an array of DataPoint objects with the same size as scores list
-                        DataPoint[] dataPoints = new DataPoint[shapeList.size()];
-                        for(int i = 0; i < shapeList.size(); i++) {
+                        DataPoint[] dataPoints = new DataPoint[colorList.size()];
+                        for(int i = 0; i < colorList.size(); i++) {
                             // add new DataPoint object to the array
-                            dataPoints[i] = new DataPoint(shapeDate.get(i), shapeList.get(i));
+                            dataPoints[i] = new DataPoint(colorDate.get(i), colorList.get(i));
                         }
                         series = new LineGraphSeries<>(dataPoints);
                         series.setColor(Color.BLUE);
@@ -213,7 +214,7 @@ public class ProgressActivity extends AppCompatActivity {
                             @Override
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
-                                        .setTitle("Shape Score")
+                                        .setTitle("Color Score")
                                         .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
                                         .setNegativeButton(
                                                 "Ok",
@@ -273,11 +274,13 @@ public class ProgressActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                        graph.getGridLabelRenderer().setNumHorizontalLabels(shapeDate.size());
+                        graph.getGridLabelRenderer().setNumHorizontalLabels(colorDate.size());
                         graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
                         graph.getGridLabelRenderer().setTextSize(12);
                         graph.getViewport().setXAxisBoundsManual(false);
                         graph.getGridLabelRenderer().setHumanRounding(true);
+                        graph.getGridLabelRenderer().setHorizontalAxisTitle("Date");
+                        graph.getGridLabelRenderer().setVerticalAxisTitle("Score");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -291,5 +294,10 @@ public class ProgressActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(ScoresRequest);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
