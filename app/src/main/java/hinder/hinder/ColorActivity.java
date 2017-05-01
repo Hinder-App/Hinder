@@ -2,11 +2,9 @@ package hinder.hinder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,10 +15,6 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,8 +30,6 @@ import org.json.JSONObject;
 import android.support.v7.app.AlertDialog;
 
 public class ColorActivity extends AppCompatActivity {
-
-    private Card firstCard;
 
     //intent-extras
     String username;
@@ -58,30 +50,29 @@ public class ColorActivity extends AppCompatActivity {
     private static int ROW_COUNT = 4;
     private static int COL_COUNT = 4;
     private Context context;
-    private int [] [] cards;
 
     private ColorButtonListener buttonListener;
 
-    private static Object lock = new Object();
-
     private TableLayout mainTable;
-    private ColorUpdateCardsHandler handler;
 
     //game implementation
     private String correctColor="example"; //color asked for
-    private String currentColor; //color of the card pressed
+    private int correctColorInt;
+
     private String randColor; //button's text color "GREEN" "RED" "BLUE"
+    private int randColorInt; //button's actual color int
 
     private final Random r = new Random();
 
-    private int countCorrectAnswers = 10;
-    private int gameCount = 10;
+    private int countCorrectAnswers = 0;
+    private int totalAnswers = 0;
+    private int gameCount = 0;
 
-    private int gameOneCount = 10;
-    private int gameOneTime = 30000;
+    private int gameOneCount = 0;
+    private int gameOneTotal = 0;
 
-    private int gameTwoCount = 10;
-    private int gameTwoTime= 10;
+    private int gameTwoCount = 0;
+    private int gameTwoTotal = 0;
 
     //timer
     TextView timer;
@@ -97,22 +88,22 @@ public class ColorActivity extends AppCompatActivity {
     private void loadActivity() {
         //clear variables
         countCorrectAnswers = 0;
+        totalAnswers=0;
 
         //increase game count
         gameCount++;
 
         setContentView(R.layout.activity_color);
-        handler = new ColorUpdateCardsHandler();
 
         buttonListener = new ColorButtonListener();
         mainTable = (TableLayout) findViewById(R.id.TableLayout03);
         context = mainTable.getContext();
-        newGame(ROW_COUNT, COL_COUNT);
+        newGame();
 
 
         //timer!
         timer = (TextView) findViewById(R.id.text_countdown);
-        new CountDownTimer(10000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(30000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
@@ -129,199 +120,121 @@ public class ColorActivity extends AppCompatActivity {
                 //CHECK IF ITs SECOND ITERATION OF GAME!
                 if (gameCount < 2) {
                     gameOneCount = countCorrectAnswers;
-                    gameOneTime = 30000;
+                    gameOneTotal = totalAnswers;
 
                     Toast.makeText(ColorActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                     loadActivity();
                 } else if (gameCount >= 2) {
                     gameTwoCount = countCorrectAnswers;
-                    gameTwoTime = 30000;
+                    gameTwoTotal = totalAnswers;
                     sendJSON();
                 }
             }
         }.start();
     }
 
-    private void newGame(int c, int r) {
-        cards = new int [COL_COUNT] [ROW_COUNT];
+    private void newGame() {
+
+        totalAnswers++;
 
         TableRow tr = ((TableRow)findViewById(R.id.TableRow03));
         tr.removeAllViews();
+        cleanTable(mainTable); //clear cards
+
+        generateCorrectColor();
 
         for (int y = 0; y < ROW_COUNT; y++) {
             mainTable.addView(createRow(y));
         }
 
-        loadCards();
-
-        generateCorrectColor();
-        ((TextView) findViewById(R.id.info)).setText("Pick the word that is colored: " + correctColor);
-        ((TextView) findViewById(R.id.tries)).setText("Number of Correct Answers: " + countCorrectAnswers);
+        ((TextView) findViewById(R.id.info)).setText("Pick the word: " + correctColor);
+        ((TextView) findViewById(R.id.tries)).setText("Number of Correct Answers: " + countCorrectAnswers+" / "+totalAnswers);
 
     }
 
-    private void loadCards(){
-        try{
-            int size = ROW_COUNT*COL_COUNT;
-
-            Log.i("loadCards()","size=" + size);
-
-            ArrayList<Integer> list = new ArrayList<>();
-            for(int i=0;i<size;i++){
-                list.add(new Integer(i));
-            }
-
-            Random r = new Random();
-            for(int i=size-1;i>=0;i--){
-                int t=0;
-                if(i>0){
-                    t = r.nextInt(i);
-                }
-                t=list.remove(t).intValue();
-                cards[i%COL_COUNT][i/COL_COUNT]=t%(size/2);
-
-                Log.i("loadCards()", "card["+(i%COL_COUNT)+
-                        "]["+(i/COL_COUNT)+"]=" + cards[i%COL_COUNT][i/COL_COUNT]);
-            }
-        }
-        catch (Exception e) {
-            Log.e("loadCards()", e+"");
-        }
-
-    }
 
     private TableRow createRow(int y){
         TableRow row = new TableRow(context);
         row.setHorizontalGravity(Gravity.CENTER);
-        for (int x = 0; x < COL_COUNT; x++) {
-            row.addView(createImageButton(x,y));
-        }
+            for (int x = 0; x < COL_COUNT; x++) {
+                generateRandomColor();
+                generateRandomColorInt();
+                if((x==3)&&(y==2)){
+                    row.addView(createButton(x, y, correctColor, randColorInt));
+                }else{
+                    row.addView(createButton(x, y, randColor, randColorInt));
+                }
+            }
         return row;
     }
 
-    private View createImageButton(int x, int y){
+    private void cleanTable(TableLayout table) {
+
+        int childCount = table.getChildCount();
+
+        // Remove all rows except the first three
+        if (childCount > 3) {
+            table.removeViews(3, childCount - 3);
+        }
+    }
+    private View createButton(int x, int y, String buttonText, int color){
         Button button = new Button(context);
         button.setId(100*x+y);
         button.setOnClickListener(buttonListener);
+        button.setText(buttonText);
+        button.setTextColor(color);
         return button;
     }
 
     class ColorButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            synchronized (lock) {
-                if(firstCard!=null){
-                    return;
-                }
-                int id = v.getId();
-                int x = id/100;
-                int y = id%100;
-                turnCard((Button)v,x,y);
-            }
-        }
-
-        private void turnCard(Button button,int x, int y) {
-            if(firstCard==null){
-                firstCard = new Card(button,x,y);
-            }
-            else{
-                if(firstCard.x == x && firstCard.y == y){
-                    return; //the user pressed the same card
-                }
-
-                TimerTask tt = new TimerTask() {
-                    @Override
-                    public void run() {
-                        try{
-                            synchronized (lock) {
-                                handler.sendEmptyMessage(0);
-                            }
-                        }
-                        catch (Exception e) {
-                            Log.e("E1", e.getMessage());
-                        }
-                    }
-                };
-
-                Timer t = new Timer(false);
-                t.schedule(tt, 1300);
-            }
-        }
-    }
-
-    class ColorUpdateCardsHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            synchronized (lock) {
-                checkCards();
-            }
-        }
-
-        public void checkCards(){
-            //sendJSON();
-            /*if(cards[secondCard.x][secondCard.y] == cards[firstCard.x][firstCard.y]){
-                firstCard.button.setVisibility(View.INVISIBLE);
+            if (((Button) v).getText().equals(correctColor)) {
+                Toast.makeText(getBaseContext(), "Answer is correct!", Toast.LENGTH_SHORT).show();
                 countCorrectAnswers++;
-                ((TextView)findViewById(R.id.tries)).setText("Number of Correct Answers: "+countCorrectAnswers);
+                newGame();
 
-                generateCorrectColor();
-                ((TextView) findViewById(R.id.instruction)).setText("Pick the word that is colored: " + correctColor);
-
-                if (countCorrectAnswers==9){
-                    //get current time
-                    if (gameCount < 2) {
-                        gameOneCount = countCorrectAnswers;
-                        gameOneTime = Integer.parseInt(timer.getText().toString().replace(":", ""))*1000;
-                        Log.i("COLOR_ONE_TIME:", Integer.toString(gameOneTime));
-                        if (gameOneTime>100000){
-                            gameOneTime-=40000;
-                        }
-                        Log.i("COLOR_ONE_TIME:", Integer.toString(gameOneTime));
-
-                        Toast.makeText(ColorActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
-                        loadActivity();
-                    } else if (gameCount >= 2) {
-                        gameTwoCount = countCorrectAnswers;
-                        gameTwoTime = Integer.parseInt(timer.getText().toString().replace(":", ""))*1000;
-                        if (gameTwoTime>100000){
-                            gameTwoTime-=40000;
-                        }
-                        Log.i("COLOR_TWO_TIME:", Integer.toString(gameTwoTime));
-
-                        sendJSON();
-                    }
-                }
-            }
-            else {
+            } else {
                 Toast.makeText(ColorActivity.this, "Wrong Answer! Try Again", Toast.LENGTH_SHORT).show();
-                generateCorrectColor();
-                ((TextView) findViewById(R.id.instruction)).setText("Pick the word that is colored: " + correctColor);
-                //secondCard.button.setBackgroundDrawable(backImage);
-                //firstCard.button.setBackgroundDrawable(backImage);
-            }*/
-            firstCard=null;
-            //secondCard =null;
+                newGame();
+            }
         }
     }
 
     private void generateCorrectColor(){
         int min = 1;
-        int max = 3;
+        int max = 6;
         int rand = r.nextInt(max - min+1) + min;
         if (rand == 1) {
             correctColor ="Green";
+            correctColorInt =  Color.GREEN;
         }
         if (rand == 2) {
             correctColor="Blue";
+            correctColorInt = Color.BLUE;
         }
         if (rand == 3) {
             correctColor="Red";
+            correctColorInt = Color.RED;
         }
+        if (rand == 4) {
+            correctColor="Yellow";
+            correctColorInt = Color.YELLOW;
+        }
+        if (rand == 5) {
+            correctColor="Black";
+            correctColorInt = Color.BLACK;
+        }
+        if (rand == 6) {
+            correctColor="White";
+            correctColorInt = Color.WHITE;
+        }
+
     }
 
     private void generateRandomColor(){
         int min = 1;
-        int max = 3;
+        int max = 6;
         int rand = r.nextInt(max - min+1) + min;
         if (rand == 1) {
             randColor ="Green";
@@ -331,6 +244,39 @@ public class ColorActivity extends AppCompatActivity {
         }
         if (rand == 3) {
             randColor="Red";
+        }
+        if (rand == 4) {
+            randColor="Yellow";
+        }
+        if (rand == 5) {
+            randColor="Black";
+        }
+        if (rand == 6) {
+            randColor="White";
+        }
+    }
+
+    private void generateRandomColorInt(){
+        int min = 1;
+        int max = 6;
+        int rand = r.nextInt(max - min+1) + min;
+        if (rand == 1) {
+            randColorInt = Color.GREEN;
+        }
+        if (rand == 2) {
+            randColorInt = Color.BLUE;
+        }
+        if (rand == 3) {
+            randColorInt = Color.RED;
+        }
+        if (rand == 4) {
+            randColorInt = Color.YELLOW;
+        }
+        if (rand == 5) {
+            randColorInt = Color.BLACK;
+        }
+        if (rand == 6) {
+            randColorInt = Color.WHITE;
         }
     }
 
@@ -369,16 +315,16 @@ public class ColorActivity extends AppCompatActivity {
 
                         JSONObject arrayElementTwoArrayElementOne = new JSONObject();
                         arrayElementTwoArrayElementOne.put("correct", gameOneCount);
-                        arrayElementTwoArrayElementOne.put("total", gameOneTime);
+                        arrayElementTwoArrayElementOne.put("total", gameOneTotal);
 
                         JSONObject arrayElementTwoArrayElementTwo = new JSONObject();
                         arrayElementTwoArrayElementTwo.put("correct", gameTwoCount);
-                        arrayElementTwoArrayElementTwo.put("total", gameTwoTime);
+                        arrayElementTwoArrayElementTwo.put("total", gameTwoTotal);
 
                         arrayElementTwoArray.put(arrayElementTwoArrayElementOne);
                         arrayElementTwoArray.put(arrayElementTwoArrayElementTwo);
 
-                        request.put("shapeGames", arrayElementTwoArray);
+                        request.put("colorGames", arrayElementTwoArray);
 
                         //math game data
 
@@ -445,19 +391,34 @@ public class ColorActivity extends AppCompatActivity {
             String status = response.getString("status");
 
             if (status.equals("success")) {
-                Intent intent = new Intent(ColorActivity.this, ProgressActivity.class);
-                intent.putExtra("USERNAME", username);
-                startActivity(intent);
+                TimerTask tt = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(ColorActivity.this, ProgressActivity.class);
+                        intent.putExtra("USERNAME", username);
+                        startActivity(intent);
+                    }
+                };
+                Timer t = new Timer(false);
+                t.schedule(tt, 1300);
+
                 Log.i(TAG, "Response: " + response.toString());
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ColorActivity.this);
                 builder.setMessage("Game Data Did Not Send")
-                        .setNegativeButton("Retry", null)
+                        .setNegativeButton("Ok", null)
                         .create()
                         .show();
-                Intent intent = new Intent(ColorActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", username);
-                startActivity(intent);
+                TimerTask tt = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(ColorActivity.this, MenuActivity.class);
+                        intent.putExtra("USERNAME", username);
+                        startActivity(intent);
+                    }
+                };
+                Timer t = new Timer(false);
+                t.schedule(tt, 1300);
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -6,13 +6,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class MenuActivity extends AppCompatActivity {
+    TextView information;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        information = (TextView) findViewById(R.id.information);
+
 
         final String username = getIntent().getStringExtra("USERNAME");
         Log.i("USERNAME:", username);

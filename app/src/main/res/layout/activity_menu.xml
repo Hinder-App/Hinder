@@ -10,10 +10,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="hinder.hinder.MenuActivity">
 
+    <TextView
+        android:id="@+id/information"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_vertical"
+        android:text="@string/information_about_games" />
+
     <Button android:id="@+id/button_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/button_start"/>
+        android:layout_gravity="center_vertical"
+        android:text="@string/button_start"
+        android:layout_below="@id/information"/>
 
     <Button android:id="@+id/button_progress"
         android:layout_width="match_parent"
