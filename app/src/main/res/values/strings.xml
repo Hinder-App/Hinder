@@ -21,7 +21,7 @@
     </string>
 
     <!-- Strings related to MenuActivity -->
-    <string name="information_about_games">You will be playing three games: Math, Memory, and Color. Each game will iterate twice to obtain enough data, which is then analyzed to measure performance and progress.</string>
+    <string name="information_about_games">You will be playing three games: Math, Memory, and Color. Each game will iterate twice to obtain sufficient data, which is then analyzed to measure performance and progress.</string>
     <string name="title_activity_menu">Menu</string>
     <string name="menu_name">Menu</string>
     <string name="button_start">Start</string>

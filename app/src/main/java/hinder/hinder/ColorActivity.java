@@ -366,14 +366,22 @@ public class ColorActivity extends AppCompatActivity {
             String status = response.getString("status");
 
             if (status.equals("success")) {
-                Intent intent = new Intent(ColorActivity.this, ProgressActivity.class);
-                intent.putExtra("USERNAME", username);
-                startActivity(intent);
+                TimerTask tt = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(ColorActivity.this, ProgressActivity.class);
+                        intent.putExtra("USERNAME", username);
+                        startActivity(intent);
+                    }
+                };
+                Timer t = new Timer(false);
+                t.schedule(tt, 1300);
+
                 Log.i(TAG, "Response: " + response.toString());
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ColorActivity.this);
                 builder.setMessage("Game Data Did Not Send")
-                        .setNegativeButton("Retry", null)
+                        .setNegativeButton("Ok", null)
                         .create()
                         .show();
                 TimerTask tt = new TimerTask() {
