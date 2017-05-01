@@ -103,7 +103,7 @@ public class ColorActivity extends AppCompatActivity {
 
         //timer!
         timer = (TextView) findViewById(R.id.text_countdown);
-        new CountDownTimer(20000, 1000) { // adjust the milli seconds here
+        new CountDownTimer(30000, 1000) { // adjust the milli seconds here
             public void onTick(long millisUntilFinished) {
                 timer.setText("" + String.format(FORMAT,
                         TimeUnit.MILLISECONDS.toHours(millisUntilFinished),
@@ -141,12 +141,13 @@ public class ColorActivity extends AppCompatActivity {
         tr.removeAllViews();
         cleanTable(mainTable); //clear cards
 
+        generateCorrectColor();
+
         for (int y = 0; y < ROW_COUNT; y++) {
             mainTable.addView(createRow(y));
         }
 
-        generateCorrectColor();
-        ((TextView) findViewById(R.id.info)).setText("Pick the word that is colored: " + correctColor);
+        ((TextView) findViewById(R.id.info)).setText("Pick the word: " + correctColor);
         ((TextView) findViewById(R.id.tries)).setText("Number of Correct Answers: " + countCorrectAnswers+" / "+totalAnswers);
 
     }
@@ -155,11 +156,15 @@ public class ColorActivity extends AppCompatActivity {
     private TableRow createRow(int y){
         TableRow row = new TableRow(context);
         row.setHorizontalGravity(Gravity.CENTER);
-        for (int x = 0; x < COL_COUNT; x++) {
-            generateRandomColor();
-            generateRandomColorInt();
-            row.addView(createButton(x,y, randColor, randColorInt));
-        }
+            for (int x = 0; x < COL_COUNT; x++) {
+                generateRandomColor();
+                generateRandomColorInt();
+                if((x==3)&&(y==2)){
+                    row.addView(createButton(x, y, correctColor, randColorInt));
+                }else{
+                    row.addView(createButton(x, y, randColor, randColorInt));
+                }
+            }
         return row;
     }
 
@@ -167,7 +172,7 @@ public class ColorActivity extends AppCompatActivity {
 
         int childCount = table.getChildCount();
 
-        // Remove all rows except the first one
+        // Remove all rows except the first three
         if (childCount > 3) {
             table.removeViews(3, childCount - 3);
         }
@@ -184,7 +189,7 @@ public class ColorActivity extends AppCompatActivity {
     class ColorButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {
-            if (((Button) v).getCurrentTextColor() == correctColorInt) {
+            if (((Button) v).getText().equals(correctColor)) {
                 Toast.makeText(getBaseContext(), "Answer is correct!", Toast.LENGTH_SHORT).show();
                 countCorrectAnswers++;
                 newGame();
@@ -198,7 +203,7 @@ public class ColorActivity extends AppCompatActivity {
 
     private void generateCorrectColor(){
         int min = 1;
-        int max = 4;
+        int max = 6;
         int rand = r.nextInt(max - min+1) + min;
         if (rand == 1) {
             correctColor ="Green";
@@ -216,12 +221,20 @@ public class ColorActivity extends AppCompatActivity {
             correctColor="Yellow";
             correctColorInt = Color.YELLOW;
         }
+        if (rand == 5) {
+            correctColor="Black";
+            correctColorInt = Color.BLACK;
+        }
+        if (rand == 6) {
+            correctColor="White";
+            correctColorInt = Color.WHITE;
+        }
 
     }
 
     private void generateRandomColor(){
         int min = 1;
-        int max = 4;
+        int max = 6;
         int rand = r.nextInt(max - min+1) + min;
         if (rand == 1) {
             randColor ="Green";
@@ -235,11 +248,17 @@ public class ColorActivity extends AppCompatActivity {
         if (rand == 4) {
             randColor="Yellow";
         }
+        if (rand == 5) {
+            randColor="Black";
+        }
+        if (rand == 6) {
+            randColor="White";
+        }
     }
 
     private void generateRandomColorInt(){
         int min = 1;
-        int max = 4;
+        int max = 6;
         int rand = r.nextInt(max - min+1) + min;
         if (rand == 1) {
             randColorInt = Color.GREEN;
@@ -252,6 +271,12 @@ public class ColorActivity extends AppCompatActivity {
         }
         if (rand == 4) {
             randColorInt = Color.YELLOW;
+        }
+        if (rand == 5) {
+            randColorInt = Color.BLACK;
+        }
+        if (rand == 6) {
+            randColorInt = Color.WHITE;
         }
     }
 
