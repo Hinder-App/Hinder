@@ -57,7 +57,8 @@
         android:layout_below="@id/edit_password"
         android:layout_alignTop="@id/text_age"
         android:textSize="30sp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:inputType="number"/>
 
     <Button android:id="@+id/button_Save"
         android:layout_width="match_parent"

@@ -27,7 +27,6 @@ import org.json.JSONObject;
  * A register screen that registers a new user via name/age/email/password.
  */
 public class RegisterActivity extends AppCompatActivity {
-    String url = "http://hinderest.herokuapp.com/users";
 
     public static final String TAG = RegisterActivity.class.getName();
     Button mEmailSignInButton;
@@ -60,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     System.out.println(e);
                 }
-                url = url + "/" + etEmail.getText().toString();
+                String url = "http://hinderest.herokuapp.com/users/" + etEmail.getText().toString();
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

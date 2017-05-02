@@ -34,8 +34,10 @@ public class MenuActivity extends AppCompatActivity {
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent loginIntent = getIntent();
+                String username = loginIntent.getStringExtra(LoginActivity.USERNAME);
                 Intent intent = new Intent(MenuActivity.this, SettingsActivity.class);
-                intent.putExtra("USERNAME", username);
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
             }
         });

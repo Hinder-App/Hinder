@@ -50,11 +50,17 @@ public class ProgressActivity extends AppCompatActivity {
     private static ArrayList<Date> mathDate = new ArrayList<>();
     private static ArrayList<Date> memoryDate = new ArrayList<>();
 
+    private static ArrayList<String> colorAnalysis = new ArrayList<>();
+    private static ArrayList<String> mathAnalysis = new ArrayList<>();
+    private static ArrayList<String> memoryAnalysis = new ArrayList<>();
+
     // Define the Volley request queue that handles the URL request concurrently
     private RequestQueue requestQueue;
 
     final static SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     final static SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+    public static String analysis;
 
     @Override
     @TargetApi(24)
@@ -120,6 +126,7 @@ public class ProgressActivity extends AppCompatActivity {
                             Log.i("Date", readDate.toString());
                             colorDate.add(i, readDate);
                             Log.i("colorList[i]:", Integer.toString(colorList.get(i)));
+                            colorAnalysis.add(i, colorScore.getString("analysis"));
                         }
 
                         // Math Scores
@@ -147,6 +154,7 @@ public class ProgressActivity extends AppCompatActivity {
                             }
                             Log.i("Date", readDate.toString());
                             mathDate.add(i, readDate);
+                            mathAnalysis.add(i, mathScore.getString("analysis"));
                         }
 
                         // Memory Scores
@@ -174,6 +182,7 @@ public class ProgressActivity extends AppCompatActivity {
                             }
                             Log.i("Date", readDate.toString());
                             memoryDate.add(i, readDate);
+                            memoryAnalysis.add(i, memoryScore.getString("analysis"));
                         }
 
                         GraphView graph = (GraphView) findViewById(R.id.graph);
@@ -215,7 +224,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Color Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getColorAnalysis(dataPoint.getY()))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -233,7 +242,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Math Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMathAnalysis(dataPoint.getY()))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -251,7 +260,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Memory Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMemoryAnalysis(dataPoint.getY()))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -294,6 +303,117 @@ public class ProgressActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(ScoresRequest);
+    }
+
+    public String getColorAnalysis(final double score) {
+        requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success")) {
+                                JSONObject data = response.getJSONObject("data");
+                                JSONObject scores = data.getJSONObject("scores");
+                                JSONArray colorScores = scores.getJSONArray("colorScores");
+                                for (int i = 0; i < colorScores.length(); i++) {
+                                    JSONObject colorScore = colorScores.getJSONObject(i);
+                                    int s = colorScore.getInt("score");
+                                    if (s == score) {
+                                        analysis = colorScore.getString("analysis");
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(getRequest);
+        return analysis;
+    }
+
+    public String getMathAnalysis(final double score) {
+        requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success")) {
+                                JSONObject data = response.getJSONObject("data");
+                                JSONObject scores = data.getJSONObject("scores");
+                                JSONArray mathScores = scores.getJSONArray("colorScores");
+                                for (int i = 0; i < mathScores.length(); i++) {
+                                    JSONObject mathScore = mathScores.getJSONObject(i);
+                                    int s = mathScore.getInt("score");
+                                    if (s == score) {
+                                        analysis = mathScore.getString("analysis");
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(getRequest);
+        return analysis;
+    }
+
+    public String getMemoryAnalysis(final double score) {
+        requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>()
+                {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("success")) {
+                                JSONObject data = response.getJSONObject("data");
+                                JSONObject scores = data.getJSONObject("scores");
+                                JSONArray memoryScores = scores.getJSONArray("memoryScores");
+                                for (int i = 0; i < memoryScores.length(); i++) {
+                                    JSONObject memoryScore = memoryScores.getJSONObject(i);
+                                    int s = memoryScore.getInt("score");
+                                    if (s == score) {
+                                        analysis = memoryScore.getString("analysis");
+                                    }
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+        requestQueue.add(getRequest);
+        return analysis;
     }
 
     @Override
