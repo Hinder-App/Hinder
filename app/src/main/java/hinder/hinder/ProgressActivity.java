@@ -60,8 +60,6 @@ public class ProgressActivity extends AppCompatActivity {
     final static SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     final static SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public static String analysis;
-
     @Override
     @TargetApi(24)
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +222,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Color Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getColorAnalysis(dataPoint.getY()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getColorAnalysis(dataPoint.getY(), formatter.format(dataPoint.getX())))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -242,7 +240,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Math Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMathAnalysis(dataPoint.getY()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMathAnalysis(dataPoint.getY(), formatter.format(dataPoint.getX())))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -260,7 +258,7 @@ public class ProgressActivity extends AppCompatActivity {
                             public void onTap(Series series, DataPointInterface dataPoint) {
                                 new AlertDialog.Builder(ProgressActivity.this)
                                         .setTitle("Memory Score")
-                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMemoryAnalysis(dataPoint.getY()))
+                                        .setMessage("Your score: " + dataPoint.getY() + "\nDate: " + formatter.format(dataPoint.getX()) + "\nAnalysis: " + getMemoryAnalysis(dataPoint.getY(), formatter.format(dataPoint.getX())))
                                         .setNegativeButton(
                                                 "Ok",
                                                 new DialogInterface.OnClickListener() {
@@ -290,6 +288,10 @@ public class ProgressActivity extends AppCompatActivity {
                         graph.getGridLabelRenderer().setHumanRounding(true);
                         graph.getGridLabelRenderer().setHorizontalAxisTitle("Date");
                         graph.getGridLabelRenderer().setVerticalAxisTitle("Score");
+                        // Get max Y value
+                        graph.getViewport().setMaxY((double) maxY());
+                        graph.getViewport().setMinY(0);
+                        graph.getViewport().setYAxisBoundsManual(true);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -305,115 +307,50 @@ public class ProgressActivity extends AppCompatActivity {
         requestQueue.add(ScoresRequest);
     }
 
-    public String getColorAnalysis(final double score) {
-        requestQueue = Volley.newRequestQueue(this);
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String status = response.getString("status");
-                            if (status.equals("success")) {
-                                JSONObject data = response.getJSONObject("data");
-                                JSONObject scores = data.getJSONObject("scores");
-                                JSONArray colorScores = scores.getJSONArray("colorScores");
-                                for (int i = 0; i < colorScores.length(); i++) {
-                                    JSONObject colorScore = colorScores.getJSONObject(i);
-                                    int s = colorScore.getInt("score");
-                                    if (s == score) {
-                                        analysis = colorScore.getString("analysis");
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        requestQueue.add(getRequest);
+    public String getColorAnalysis(double Score, String date){
+        String analysis = "";
+        for(int i = 0; i < colorList.size(); i++){
+            if(colorList.get(i) == Score && formatter.format(colorDate.get(i).getTime()).equals(date)){
+                analysis = colorAnalysis.get(i);
+            }
+        }
         return analysis;
     }
 
-    public String getMathAnalysis(final double score) {
-        requestQueue = Volley.newRequestQueue(this);
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String status = response.getString("status");
-                            if (status.equals("success")) {
-                                JSONObject data = response.getJSONObject("data");
-                                JSONObject scores = data.getJSONObject("scores");
-                                JSONArray mathScores = scores.getJSONArray("colorScores");
-                                for (int i = 0; i < mathScores.length(); i++) {
-                                    JSONObject mathScore = mathScores.getJSONObject(i);
-                                    int s = mathScore.getInt("score");
-                                    if (s == score) {
-                                        analysis = mathScore.getString("analysis");
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        requestQueue.add(getRequest);
+
+    public String getMathAnalysis(double Score, String date){
+        String analysis = "";
+        for(int i = 0; i < mathList.size(); i++){
+            if(mathList.get(i) == Score && formatter.format(mathDate.get(i).getTime()).equals(date)){
+                analysis = mathAnalysis.get(i);
+            }
+        }
         return analysis;
     }
 
-    public String getMemoryAnalysis(final double score) {
-        requestQueue = Volley.newRequestQueue(this);
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String status = response.getString("status");
-                            if (status.equals("success")) {
-                                JSONObject data = response.getJSONObject("data");
-                                JSONObject scores = data.getJSONObject("scores");
-                                JSONArray memoryScores = scores.getJSONArray("memoryScores");
-                                for (int i = 0; i < memoryScores.length(); i++) {
-                                    JSONObject memoryScore = memoryScores.getJSONObject(i);
-                                    int s = memoryScore.getInt("score");
-                                    if (s == score) {
-                                        analysis = memoryScore.getString("analysis");
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                });
-        requestQueue.add(getRequest);
+    public String getMemoryAnalysis(double Score, String date){
+        String analysis = "";
+        for(int i = 0; i < memoryList.size(); i++){
+            if(memoryList.get(i) == Score && formatter.format(memoryDate.get(i).getTime()).equals(date)){
+                analysis = memoryAnalysis.get(i);
+            }
+        }
         return analysis;
+    }
+
+    public int maxY(){
+        int max = 0;
+        for(int i = 0; i < colorList.size(); i++) {
+            if(colorList.get(i) > max && colorList.get(i) > mathList.get(i) && colorList.get(i) > memoryList.get(i)){
+                max = colorList.get(i);
+            } else if(mathList.get(i) > max && mathList.get(i) > colorList.get(i) && mathList.get(i) > memoryList.get(i)){
+                max = mathList.get(i);
+            } else if(memoryList.get(i) > max && memoryList.get(i) > mathList.get(i) && memoryList.get(i) > colorList.get(i)){
+                max = memoryList.get(i);
+            }
+        }
+        Log.i("Max", Integer.toString(max));
+        return max;
     }
 
     @Override
