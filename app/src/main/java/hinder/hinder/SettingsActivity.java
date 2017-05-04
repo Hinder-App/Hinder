@@ -50,69 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
         bSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                RequestQueue requestQueue = Volley.newRequestQueue(SettingsActivity.this);
                 String url = "http://hinderest.herokuapp.com/users/" + username;
-
-                /*HashMap<String, String> params = new HashMap<>();
-                params.put("name", etName.getText().toString());
-                params.put("password", etPassword.getText().toString());
-                params.put("age", etAge.getText().toString());
-
-                JSONObject update = new JSONObject();
-                try {
-                    update.put("name", etName.getText().toString());
-                    update.put("password", etPassword.getText().toString());
-                    update.put("age", new Integer(etAge.getText().toString()));
-                    update.put("email", username);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                JsonObjectRequest changeInfo = new JsonObjectRequest(Request.Method.POST, url, update, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response){
-                        try {
-                            String status = response.getString("status");
-                            if(status.equals("success")) {
-                                Intent intent = new Intent(SettingsActivity.this, MenuActivity.class);
-                                JSONObject name = response.getJSONObject("data").put("name", etName.getText().toString());
-                                JSONObject password = response.getJSONObject("data").put("password", etPassword.getText().toString());
-                                JSONObject age = response.getJSONObject("data").put("age", new Integer(etAge.getText().toString()));
-                                Log.i("Name", name.toString());
-                                Log.i("Password", password.toString());
-                                Log.i("Age", age.toString());
-                                Log.i("Response", response.toString());
-                                startActivity(intent);
-                            }
-                        } catch(JSONException e) {
-                            e.printStackTrace();
-                        }
-                        Log.i("Response", response.toString());
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(SettingsActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        error.printStackTrace();
-                    }
-                })*//*{
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<>();
-                        headers.put("Content-Type", "application/json; charset=utf-8");
-                        return headers;
-                    }
-                    @Override
-                    protected Map<String, String> getParams(){
-                        Map<String, String> params = new HashMap<>();
-                        params.put("name", etName.getText().toString());
-                        params.put("password", etPassword.getText().toString());
-                        params.put("age", etAge.getText().toString());
-                        return params;
-                    }
-                }*//*;
-                requestQueue.add(changeInfo);*/
 
                 JSONObject request = new JSONObject();
                 try {
