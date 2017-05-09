@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -33,6 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
     AutoCompleteTextView etName, etAge, etEmail;
     EditText etPassword;
 
+    public final static String USERNAME = "Username:";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         onRes(response);
+                        Log.i("Response", response.toString());
                     }
                 }, new Response.ErrorListener(){
                     @Override
@@ -72,6 +75,12 @@ public class RegisterActivity extends AppCompatActivity {
                         error.printStackTrace();
                     }
                 });
+
+                jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        5000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                ));
 
                 // Access the RequestQueue through your singleton class.
                 HinderRequestQueue.getInstance(RegisterActivity.this).addToRequestQueue(jsObjRequest);
@@ -89,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", etEmail.getText().toString());
+                intent.putExtra(USERNAME, etEmail.getText().toString());
                 startActivity(intent);
                 Log.i(TAG, "Response: " + response.toString());
             } else {

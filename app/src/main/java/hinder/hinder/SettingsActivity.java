@@ -6,33 +6,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class SettingsActivity extends AppCompatActivity {
 
     Button bSave;
     EditText etName, etAge, etPassword;
-    private RequestQueue requestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

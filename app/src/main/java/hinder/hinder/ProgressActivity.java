@@ -42,17 +42,17 @@ public class ProgressActivity extends AppCompatActivity {
     private static LineGraphSeries<DataPoint> series3;
 
     // Arrays hold scores
-    private static ArrayList<Integer> colorList = new ArrayList<>();
-    private static ArrayList<Integer> mathList = new ArrayList<>();
-    private static ArrayList<Integer> memoryList = new ArrayList<>();
+    private static ArrayList<Integer> colorList;
+    private static ArrayList<Integer> mathList;
+    private static ArrayList<Integer> memoryList;
 
-    private static ArrayList<Date> colorDate = new ArrayList<>();
-    private static ArrayList<Date> mathDate = new ArrayList<>();
-    private static ArrayList<Date> memoryDate = new ArrayList<>();
+    private static ArrayList<Date> colorDate;
+    private static ArrayList<Date> mathDate;
+    private static ArrayList<Date> memoryDate;
 
-    private static ArrayList<String> colorAnalysis = new ArrayList<>();
-    private static ArrayList<String> mathAnalysis = new ArrayList<>();
-    private static ArrayList<String> memoryAnalysis = new ArrayList<>();
+    private static ArrayList<String> colorAnalysis;
+    private static ArrayList<String> mathAnalysis;
+    private static ArrayList<String> memoryAnalysis;
 
     // Define the Volley request queue that handles the URL request concurrently
     private RequestQueue requestQueue;
@@ -85,6 +85,18 @@ public class ProgressActivity extends AppCompatActivity {
             }
         }
         Log.i("URL", url);
+
+        colorList = new ArrayList<>();
+        mathList = new ArrayList<>();
+        memoryList = new ArrayList<>();
+
+        colorDate = new ArrayList<>();
+        mathDate = new ArrayList<>();
+        memoryDate = new ArrayList<>();
+
+        colorAnalysis = new ArrayList<>();
+        mathAnalysis = new ArrayList<>();
+        memoryAnalysis = new ArrayList<>();
 
         // Create Volley request queue
         requestQueue = Volley.newRequestQueue(this);
@@ -184,6 +196,7 @@ public class ProgressActivity extends AppCompatActivity {
                         }
 
                         GraphView graph = (GraphView) findViewById(R.id.graph);
+                        graph.getLegendRenderer().setVisible(true);
 
                         // declare an array of DataPoint objects with the same size as scores list
                         DataPoint[] dataPoints = new DataPoint[colorList.size()];
@@ -193,6 +206,10 @@ public class ProgressActivity extends AppCompatActivity {
                         }
                         series = new LineGraphSeries<>(dataPoints);
                         series.setColor(Color.BLUE);
+                        series.setTitle("Color Game");
+                        series.setDrawDataPoints(true);
+                        series.setDataPointsRadius(5);
+                        //series.setTextColor(Color.BLACK);
                         graph.addSeries(series);
 
                         DataPoint[] dataPoints2 = new DataPoint[mathList.size()];
@@ -201,6 +218,9 @@ public class ProgressActivity extends AppCompatActivity {
                         }
                         series2 = new LineGraphSeries<>(dataPoints2);
                         series2.setColor(Color.RED);
+                        series2.setTitle("Math Game");
+                        series2.setDrawDataPoints(true);
+                        series2.setDataPointsRadius(5);
                         graph.addSeries(series2);
 
                         DataPoint[] dataPoints3 = new DataPoint[memoryList.size()];
@@ -209,6 +229,9 @@ public class ProgressActivity extends AppCompatActivity {
                         }
                         series3 = new LineGraphSeries<>(dataPoints3);
                         series3.setColor(Color.GREEN);
+                        series3.setTitle("Memory Game");
+                        series3.setDrawDataPoints(true);
+                        series3.setDataPointsRadius(5);
                         graph.addSeries(series3);
 
                         graph.getViewport().setScalable(true);
@@ -282,9 +305,13 @@ public class ProgressActivity extends AppCompatActivity {
                             }
                         });
                         graph.getGridLabelRenderer().setNumHorizontalLabels(colorDate.size());
+                        Log.i("Color size", Integer.toString(colorDate.size()));
                         graph.getGridLabelRenderer().setHorizontalLabelsAngle(90);
                         graph.getGridLabelRenderer().setTextSize(12);
                         graph.getViewport().setXAxisBoundsManual(false);
+                        /*graph.getViewport().setXAxisBoundsManual(true);
+                        graph.getViewport().setMinX(Double.parseDouble(colorDate.get(0).toString()));
+                        graph.getViewport().setMaxX(maxX());*/
                         graph.getGridLabelRenderer().setHumanRounding(true);
                         graph.getGridLabelRenderer().setHorizontalAxisTitle("Date");
                         graph.getGridLabelRenderer().setVerticalAxisTitle("Score");
@@ -305,6 +332,8 @@ public class ProgressActivity extends AppCompatActivity {
             }
         });
         requestQueue.add(ScoresRequest);
+
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     public String getColorAnalysis(double Score, String date){
@@ -349,7 +378,28 @@ public class ProgressActivity extends AppCompatActivity {
                 max = memoryList.get(i);
             }
         }
-        Log.i("Max", Integer.toString(max));
+        Log.i("Max Y:", Integer.toString(max));
+        return max;
+    }
+
+    public double maxX(){
+        Double max = Double.parseDouble(colorDate.get(0).toString());
+        for(int i = 0; i < colorDate.size(); i++) {
+            if(Double.parseDouble(colorDate.get(i).toString()) > max &&
+                    Double.parseDouble(colorDate.get(i).toString()) > Double.parseDouble(mathDate.get(i).toString()) &&
+                    Double.parseDouble(colorDate.get(i).toString()) > Double.parseDouble(memoryDate.get(i).toString())){
+                max = Double.parseDouble(colorDate.get(i).toString());
+            } else if(Double.parseDouble(mathDate.get(i).toString()) > max &&
+                    Double.parseDouble(mathDate.get(i).toString()) > Double.parseDouble(colorDate.get(i).toString()) &&
+                    Double.parseDouble(mathDate.get(i).toString()) > Double.parseDouble(memoryDate.get(i).toString())){
+                max = Double.parseDouble(mathDate.get(i).toString());
+            } else if(Double.parseDouble(memoryDate.get(i).toString()) > max &&
+                    Double.parseDouble(memoryDate.get(i).toString()) > Double.parseDouble(mathDate.get(i).toString()) &&
+                    Double.parseDouble(memoryDate.get(i).toString()) > Double.parseDouble(colorDate.get(i).toString())){
+                max = Double.parseDouble(memoryDate.get(i).toString());
+            }
+        }
+        Log.i("Max X:", max.toString());
         return max;
     }
 
@@ -357,4 +407,10 @@ public class ProgressActivity extends AppCompatActivity {
     public void onBackPressed() {
 
     }
+
+    /*@Override
+    public boolean onSupportNavigateUp(){
+        finish();
+        return true;
+    }*/
 }
