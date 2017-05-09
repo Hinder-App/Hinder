@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 public class MenuActivity extends AppCompatActivity {
     TextView information;
+    public final static String USERNAME = "Username:";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +19,15 @@ public class MenuActivity extends AppCompatActivity {
 
         information = (TextView) findViewById(R.id.information);
 
-
-        final String username = getIntent().getStringExtra("USERNAME");
-        Log.i("USERNAME:", username);
-
         Button mStartButton = (Button) findViewById(R.id.button_start);
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String username = getIntent().getStringExtra(LoginActivity.USERNAME);
+                if(username == null) {
+                    username = getIntent().getStringExtra(RegisterActivity.USERNAME);
+                }
+                Log.i(USERNAME, username);
                 Intent intent = new Intent(MenuActivity.this, MathActivity.class);
                 intent.putExtra("USERNAME", username);
                 startActivity(intent);
@@ -36,8 +38,14 @@ public class MenuActivity extends AppCompatActivity {
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String username = getIntent().getStringExtra(LoginActivity.USERNAME);
+                if(username == null) {
+                    username = getIntent().getStringExtra(RegisterActivity.USERNAME);
+                    Log.i(USERNAME, username);
+
+                }
                 Intent intent = new Intent(MenuActivity.this, SettingsActivity.class);
-                intent.putExtra("USERNAME", username);
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
             }
         });
@@ -46,8 +54,15 @@ public class MenuActivity extends AppCompatActivity {
         mProgressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String username = getIntent().getStringExtra(LoginActivity.USERNAME);
+                Log.i("loginactivity Username", username);
+
+                if(username == null) {
+                    username = getIntent().getStringExtra(RegisterActivity.USERNAME);
+                    Log.i("registeractiv Username", username);
+                }
                 Intent intent = new Intent(MenuActivity.this, ProgressActivity.class);
-                intent.putExtra("USERNAME", username);
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
             }
         });

@@ -29,9 +29,9 @@ public class LoginActivity extends AppCompatActivity {
 
     AutoCompleteTextView etEmail;
     EditText etPassword;
-    private String url = "http://hinderest.herokuapp.com/users";
     public static final String TAG = LoginActivity.class.getName();
 
+    public final static String USERNAME = "Username:";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     System.out.println(e);
                 }
-                String url = "http://hinderest.herokuapp.com/users" + "/" + etEmail.getText().toString();
+                String url = "http://hinderest.herokuapp.com/users/" + etEmail.getText().toString();
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -73,6 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                 HinderRequestQueue.getInstance(LoginActivity.this).addToRequestQueue(jsObjRequest);
             }
         });
+
+
 
         TextView mSignUpView = (TextView) findViewById(R.id.sign_up);
         mSignUpView.setOnClickListener(new OnClickListener() {
@@ -92,8 +94,10 @@ public class LoginActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", etEmail.getText().toString());
+                String username = etEmail.getText().toString();
+                intent.putExtra(USERNAME, username);
                 startActivity(intent);
+                Log.i("Username", username);
                 Log.i(TAG, "Response: " + response.toString());
             } else {
                 etEmail.setText("Email: " + response.getJSONObject("data").getJSONObject("user").getString("username"));

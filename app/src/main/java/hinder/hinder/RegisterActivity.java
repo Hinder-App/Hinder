@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -27,13 +28,13 @@ import org.json.JSONObject;
  * A register screen that registers a new user via name/age/email/password.
  */
 public class RegisterActivity extends AppCompatActivity {
-    String url = "http://hinderest.herokuapp.com/users";
 
     public static final String TAG = RegisterActivity.class.getName();
     Button mEmailSignInButton;
     AutoCompleteTextView etName, etAge, etEmail;
     EditText etPassword;
 
+    public final static String USERNAME = "Username:";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +61,12 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     System.out.println(e);
                 }
-                url = url + "/" + etEmail.getText().toString();
+                String url = "http://hinderest.herokuapp.com/users/" + etEmail.getText().toString();
                 JsonObjectRequest jsObjRequest = new JsonObjectRequest (Request.Method.POST, url, request, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         onRes(response);
+                        Log.i("Response", response.toString());
                     }
                 }, new Response.ErrorListener(){
                     @Override
@@ -73,6 +75,12 @@ public class RegisterActivity extends AppCompatActivity {
                         error.printStackTrace();
                     }
                 });
+
+                jsObjRequest.setRetryPolicy(new DefaultRetryPolicy(
+                        5000,
+                        DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+                ));
 
                 // Access the RequestQueue through your singleton class.
                 HinderRequestQueue.getInstance(RegisterActivity.this).addToRequestQueue(jsObjRequest);
@@ -90,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (status.equals("success")) {
                 Intent intent = new Intent(RegisterActivity.this, MenuActivity.class);
-                intent.putExtra("USERNAME", etEmail.getText().toString());
+                intent.putExtra(USERNAME, etEmail.getText().toString());
                 startActivity(intent);
                 Log.i(TAG, "Response: " + response.toString());
             } else {
