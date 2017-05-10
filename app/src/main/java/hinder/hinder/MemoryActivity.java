@@ -328,12 +328,9 @@ public class MemoryActivity extends AppCompatActivity {
                     //get current time
                     if (gameCount < 2) {
                         gameOneCount = countCorrectAnswers;
-                        gameOneTime = Integer.parseInt(timer.getText().toString().replace(":", ""))*1000;
+                        gameOneTime = 40000 - (Integer.parseInt(timer.getText().toString().replace(":", ""))*1000);
                         Log.i("MEM_ONE_TIME:", Integer.toString(gameOneTime));
-                        if (gameOneTime>100000){
-                            gameOneTime-=40000;
-                        }
-                        Log.i("MEM_ONE_TIME:", Integer.toString(gameOneTime));
+
                         try {
                             Toast.makeText(MemoryActivity.this, "Starting Second Session...", Toast.LENGTH_SHORT).show();
                             Thread.sleep(1000);
@@ -343,10 +340,7 @@ public class MemoryActivity extends AppCompatActivity {
                         }
                     } else if (gameCount >= 2) {
                         gameTwoCount = countCorrectAnswers;
-                        gameTwoTime = Integer.parseInt(timer.getText().toString().replace(":", ""))*1000;
-                        if (gameTwoTime>100000){
-                            gameTwoTime-=40000;
-                        }
+                        gameTwoTime = 40000 - (Integer.parseInt(timer.getText().toString().replace(":", ""))*1000);
                         Log.i("MEM_TWO_TIME:", Integer.toString(gameTwoTime));
 
                         try {
